@@ -258,3 +258,6 @@ async def get_all_users(token: str):
     user_list = await User.filter().all()
     return user_list
 
+
+
+
