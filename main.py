@@ -58,5 +58,5 @@ app.include_router(api_lookup, prefix="/lookup", tags=["查询相关接口"])
 if __name__ == '__main__':
     check_env()
     logger.info(logo_tmpl)
-    uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=True)
     
