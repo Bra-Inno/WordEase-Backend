@@ -34,7 +34,7 @@ jobs:
             # 克隆项目
             echo "克隆项目..."
             git clone https://github.com/Bra-Inno/WordEase-Backend /root/project/wordease || exit 1
-            
+            cp ~/secert/wordease/secert.py ~/project/wordease/app/config
             # 确保tmux环境正确
             echo "设置tmux环境..."
             tmux kill-server || true
@@ -53,6 +53,9 @@ jobs:
             if [ ! -d "/root/project/venv/wordease_venv" ]; then
               tmux send-keys -t wordease "python3 -m venv ../venv/wordease_venv" C-m
             fi
+
+            # 移动私密文件
+            scp -r /root/project/wordease/keys /root/project/venv/wordease_venv
             tmux send-keys -t wordease "cd wordease" C-m
             tmux send-keys -t wordease "source ../venv/wordease_venv/bin/activate" C-m
             tmux send-keys -t wordease "pip install -r requirements.txt -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple" C-m
