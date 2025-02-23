@@ -52,5 +52,11 @@ DEFAULT_CONFIG={
         "alibaba_cloud_accesskey_secret": alibaba_cloud_accesskey_secret,
         "sign_name": sign_name,
     },
+    "llm_config": {
+        "api_key": api_key,
+        "base_url": base_url,
+        "model": "gpt-4o-mini",
+        "system_prompt": "你是一个擅长翻译英文的小助手，对于英文的单词或词组，可以给出你自己的解释或翻译",
+    },
 }
 

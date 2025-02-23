@@ -7,7 +7,7 @@ import os
 
 from app import logger,app_config
 from app.api.user import api_user
-from app.api.system import api_system
+from app.api.ai import api_ai
 
 
 #from wordease.api.user import api_user
@@ -51,7 +51,7 @@ app.add_middleware(
     )
 
 app.include_router(api_user, prefix="/user", tags=["用户相关接口"])
-
+app.include_router(api_ai, prefix="/ai", tags=["AI相关接口"])
 
 
 if __name__ == '__main__':
