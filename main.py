@@ -3,17 +3,23 @@ import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from tortoise.contrib.fastapi import register_tortoise
+import os
 
-from wordease.core import logger, LogManager, LogBroker
-from wordease.core import wordease_config
+from app import logger,app_config
+from app.api.user import api_user
+from app.api.system import api_system
+
 
 #from wordease.api.user import api_user
+mysql_config = app_config.mysql_config
 
 logo_tmpl=r"""
 ----------------------------------------
             wordease已经运行
 ----------------------------------------
 """
+def check_env():
+    os.makedirs("data/", exist_ok=True)
 app = FastAPI(
     title="WordEase API",
     description="一款随时陪伴的语言学习软件",
@@ -22,9 +28,20 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+register_tortoise(
+        app,
+        config=mysql_config,
+        generate_schemas=True,  # 开发环境可以生成表结构，生产环境建议关闭
+        add_exception_handlers=True,  # 显示错误信息
+    )
+
+check_env()
 @app.get("/")
 async def root():
     return {"message": "欢迎来到WordEase,一款随时陪伴的语言学习软件"}
+    # 初始化 Tortoise ORM
+    
 app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],  # 允许所有来源
@@ -33,20 +50,11 @@ app.add_middleware(
         allow_headers=["*"],  # 允许所有头
     )
 
+app.include_router(api_user, prefix="/user", tags=["用户相关接口"])
+
+
+
 if __name__ == '__main__':
-    #app.include_router(api_user, prefix="/user", tags=["用户接口"])
-
-    mysql_config = wordease_config.mysql_config
-    # 初始化 Tortoise ORM
-    register_tortoise(
-        app,
-        config=mysql_config,
-        generate_schemas=False,  # 开发环境可以生成表结构，生产环境建议关闭
-        add_exception_handlers=True,  # 显示错误信息
-    )
-
-    log_broker = LogBroker()
-    LogManager.set_queue_handler(logger, log_broker)
     logger.info(logo_tmpl)
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
     

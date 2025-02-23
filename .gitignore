@@ -8,8 +8,7 @@ __pycache__/
 *.so
 # 忽略data文件夹
 data/
-wordease/config/constant.py
-wordease/config/default.py
+app/config/secret.py
 # Distribution / packaging
 .Python
 build/
