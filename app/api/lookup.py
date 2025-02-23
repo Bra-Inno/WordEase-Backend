@@ -3,5 +3,5 @@
 
 from fastapi import APIRouter
 
-api_system = APIRouter()
+api_lookup = APIRouter()
 

@@ -11,7 +11,7 @@ llm_config=app_config.llm_config
 system_prompt=llm_config["system_prompt"]
 model=llm_config["model"]
 
-@api_ai.post("/ai/llm", description="大语言模型对话")
+@api_ai.post("llm/base/call", description="大语言模型对话")
 def call_llm(user_message):
     messages = [
         {"role": "system", "content": system_prompt},
