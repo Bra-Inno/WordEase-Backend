@@ -19,7 +19,7 @@ logo_tmpl=r"""
 ----------------------------------------
 """
 def check_env():
-    os.makedirs("data/", exist_ok=True)
+    pass
 app = FastAPI(
     title="WordEase API",
     description="一款随时陪伴的语言学习软件",
@@ -36,7 +36,7 @@ register_tortoise(
         add_exception_handlers=True,  # 显示错误信息
     )
 
-check_env()
+
 @app.get("/")
 async def root():
     return {"message": "欢迎来到WordEase,一款随时陪伴的语言学习软件"}
@@ -55,6 +55,7 @@ app.include_router(api_ai, prefix="/ai", tags=["AI相关接口"])
 
 
 if __name__ == '__main__':
+    check_env()
     logger.info(logo_tmpl)
     uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)
     

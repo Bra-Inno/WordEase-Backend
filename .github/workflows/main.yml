@@ -35,6 +35,7 @@ jobs:
             echo "克隆项目..."
             git clone https://github.com/Bra-Inno/WordEase-Backend /root/project/wordease || exit 1
             cp /root/secret/wordease/secret.py /root/project/wordease/app/config
+            cp /root/secret/wordease/cmd_config.json /root/project/wordease/data
             # 确保tmux环境正确
             echo "设置tmux环境..."
             tmux kill-server || true
