@@ -1,0 +1,69 @@
+name: Deploy Python Project
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH to Server and Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            echo "开始部署..."
+            
+            # 确保杀死已存在的进程
+            echo "停止现有进程..."
+            sudo kill -9 $(sudo lsof -t -i:8001) || true
+            
+            # 清理并准备目录
+            echo "清理目录..."
+                        echo "清理目录..."
+            if [ -d "/root/project/wordease" ]; then
+              rm -rf /root/project/wordease
+            fi
+            mkdir -p /root/project/wordease
+            
+            # 克隆项目
+            echo "克隆项目..."
+            git clone https://github.com/Bra-Inno/WordEase-Backend /root/project/wordease || exit 1
+            
+            # 确保tmux环境正确
+            echo "设置tmux环境..."
+            tmux kill-server || true
+            sleep 2
+            
+            # 创建新的tmux会话
+            echo "创建tmux会话..."
+            tmux new-session -d -s wordease || exit 1
+            
+            # 等待tmux会话创建完成
+            sleep 2
+            
+            # 在tmux会话中执行命令
+            echo "执行部署命令..."
+            tmux send-keys -t wordease "cd /root/project" C-m
+            if [ ! -d "/root/project/venv/wordease_venv" ]; then
+              tmux send-keys -t wordease "python3 -m venv ../venv/wordease_venv" C-m
+            fi
+            tmux send-keys -t wordease "cd wordease" C-m
+            tmux send-keys -t wordease "source ../venv/wordease_venv/bin/activate" C-m
+            tmux send-keys -t wordease "pip install -r requirements.txt -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple" C-m
+            tmux send-keys -t wordease "python3 main.py" C-m
+            
+            # 验证服务是否启动
+            echo "等待服务启动..."
+            sleep 20
+            if sudo lsof -i:8001; then
+              echo "服务成功启动在8001端口"
+            else
+              echo "服务启动失败"
+              exit 1
+            fi

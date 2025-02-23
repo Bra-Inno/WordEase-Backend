@@ -56,5 +56,5 @@ app.include_router(api_ai, prefix="/ai", tags=["AI相关接口"])
 
 if __name__ == '__main__':
     logger.info(logo_tmpl)
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("main:app", host="127.0.0.1", port=8001, reload=True)
     
