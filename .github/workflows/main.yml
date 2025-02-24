@@ -38,7 +38,7 @@ jobs:
             mkdir /root/project/wordease/data
             # 确保tmux环境正确
             echo "设置tmux环境..."
-            tmux kill-server || true
+            tmux kill-server -t wordease || true
             sleep 2
             
             # 创建新的tmux会话
